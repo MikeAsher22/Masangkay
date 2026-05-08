@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://udf70r5ays5c"]
+
+[ext_resource type="Script" uid="uid://djis4rr5kiq4p" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://5j03o8f5uxbl" path="res://player.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://qti2jlsexd6y" path="res://mob.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://dbvd2md3r6eo" path="res://hud.tscn" id="4_1bvp3"]
+[ext_resource type="AudioStream" uid="uid://bqdekavmqic86" path="res://art/House In a Forest Loop.ogg" id="5_7mycd"]
+[ext_resource type="AudioStream" uid="uid://1ex388mpumcn" path="res://art/malupiton-arayyyyy-koo.mp3" id="6_272bh"]
+
+[sub_resource type="Curve2D" id="Curve2D_ig7tw"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="Main" type="Node" unique_id=1353118259]
+script = ExtResource("1_0xm2m")
+mob_scene = ExtResource("2_h2yge")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1723020882]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9992325, 0.61386615, 0.6640032, 1)
+
+[node name="player" parent="." unique_id=162692910 instance=ExtResource("1_ig7tw")]
+
+[node name="MobTimer" type="Timer" parent="." unique_id=398032753]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="." unique_id=2046536159]
+
+[node name="StartTimer" type="Timer" parent="." unique_id=1477875075]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="." unique_id=1384932836]
+position = Vector2(250, 450)
+
+[node name="MobPath" type="Path2D" parent="." unique_id=264877123]
+curve = SubResource("Curve2D_ig7tw")
+
+[node name="MobSpawnLocation" type="PathFollow2D" parent="MobPath" unique_id=1998810859]
+
+[node name="HUD" parent="." unique_id=748045958 instance=ExtResource("4_1bvp3")]
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=284918373]
+stream = ExtResource("5_7mycd")
+autoplay = true
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=677002271]
+stream = ExtResource("6_272bh")
+
+[connection signal="hit" from="player" to="." method="new_game"]
+[connection signal="hit" from="player" to="." method="game_over"]
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
+[connection signal="start_game" from="HUD" to="." method="new_game"]
